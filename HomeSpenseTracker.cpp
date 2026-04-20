@@ -19,36 +19,19 @@ int displayMenu() {
     int choice;
 
     do {
-        cout << " 1. Mortgage" << endl;
-        cout << " 2. Utilities" << endl;
-        cout << " 3. Grocies" << endl;
-        cout << " 4. gas" << endl;
-        cout << " 5. Internet" << endl;
-        cout << " 6. Insurance" << endl;
-        cout << " 7. Dining" << endl;
-        cout << " 8. Travel" << endl;
-        cout << " 9. Helath" << endl;
-        cout << " 10. Exsit" << endl;
-
-
+        cout << " 1. expeses for every month and the most spent every month" << endl;
+        cout << " 2. detailed report for any month" << endl;
+        cout << " 3. exsit" << endl;
+        
         cin >> choice;
         switch (choice) {
             
-            case 10 : cout << "Goodbye!" << endl; break;
+            case 3 : cout << "Goodbye!" << endl; break;
             default: cout << "Invalid choice. Try again." << endl;
         }
 
-    } while (choice != 10);
+    } while (choice != 3);
 
     return choice;
 }
-
-
-
-struct Travel{
-    int 01;
-    string category;
-    double 200;
-    double 250;
-};
 
