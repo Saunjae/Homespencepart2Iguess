@@ -1,0 +1,10 @@
+SYSTEM REQUIREMENTS:
+
+
+Menu: 1. Have a option to display the expeses for every month in descending or ascending order and should display the most spent for every given month
+
+2. Have a option to display a detailed report for any month the user wants to look into. Could be all months
+
+3. Have a option to exit the program.
+
+4. 
