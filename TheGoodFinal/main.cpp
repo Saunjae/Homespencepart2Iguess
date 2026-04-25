@@ -53,7 +53,7 @@ int Menu(Expenses *list, int count) {
             cout << "Invalid choice.\n";
         }
 
-    } while (choice != 5);
+    } while (choice != 6);
 
     return choice;
 }
