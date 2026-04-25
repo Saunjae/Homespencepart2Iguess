@@ -1,7 +1,7 @@
-#include <iostream>
-#include <string>
 #include <fstream>
 #include <iomanip>
+#include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -13,27 +13,62 @@ struct Expenses {
 };
 
 // Function prototypes
-bool loadExpenses(Expenses*& list, int& count);
-void displayAll(const Expenses* list, int count);
+bool loadExpenses(Expenses *&list, int &count);
+void displayAll(const Expenses *list, int count);
+int Menu(const Expenses *list, int count);
+int HighestSpending();
+
+int Menu(const Expenses *list, int count) {
+    int choice;
+
+    cout << "Welcome to the Home Expense Tracker!" << endl;
+
+    do {
+        cout << "\n1. See all expenses grouped by month" << endl;
+        cout << "2. See the month with the highest spending" << endl;
+        cout << "3. See each month (ascending order)" << endl;
+        cout << "4. See each month (descending order)" << endl;
+        cout << "5. Exit" << endl;
+
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            displayAll(list, count);
+            break;
+
+        case 6:
+            cout << "Have a good day!" << endl;
+            break;
+
+        default:
+            cout << "Invalid choice.\n";
+        }
+
+    } while (choice != 6);
+
+    return choice;
+}
 
 int main() {
-    Expenses* expenseList = nullptr;
+
+    Expenses *expenseList = nullptr;
     int totalRecords = 0;
 
     if (loadExpenses(expenseList, totalRecords)) {
         cout << "Successfully loaded " << totalRecords << " records.\n\n";
-        displayAll(expenseList, totalRecords);
+        Menu(expenseList, totalRecords);
     } else {
         cout << "Error: Could not open expenses file.\n";
         cout << "Make sure expenses.txt exists and the file path is correct.\n";
     }
-
     delete[] expenseList;
     return 0;
 }
 
 // Function definitions
-bool loadExpenses(Expenses*& list, int& count) {
+bool loadExpenses(Expenses *&list, int &count) {
     // Replace this with your real file path
     ifstream file("expenses.txt");
     if (!file) {
@@ -66,18 +101,17 @@ bool loadExpenses(Expenses*& list, int& count) {
 
     // Read records into array
     for (int i = 0; i < count; i++) {
-        file >> list[i].month >> list[i].category >> list[i].amount >> list[i].budgeted;
+        file >> list[i].month >> list[i].category >> list[i].amount >>
+            list[i].budgeted;
     }
 
     file.close();
     return true;
 }
 
-void displayAll(const Expenses* list, int count) {
-    cout << left << setw(10) << "Month"
-         << setw(15) << "Category"
-         << setw(12) << "Spent"
-         << setw(12) << "Budgeted" << endl;
+void displayAll(const Expenses *list, int count) {
+    cout << left << setw(10) << "Month" << setw(15) << "Category" << setw(12)
+         << "Spent" << setw(12) << "Budgeted" << endl;
 
     cout << "---------------------------------------------" << endl;
 
@@ -91,12 +125,17 @@ void displayAll(const Expenses* list, int count) {
                     monthFound = true;
                 }
 
-                cout << left << setw(10) << ""
-                     << setw(15) << list[i].category
-                     << "$" << setw(11) << fixed << setprecision(2) << list[i].amount
-                     << "$" << setw(11) << fixed << setprecision(2) << list[i].budgeted
-                     << endl;
+                cout << left << setw(10) << "" << setw(15) << list[i].category
+                     << "$" << setw(11) << fixed << setprecision(2)
+                     << list[i].amount << "$" << setw(11) << fixed
+                     << setprecision(2) << list[i].budgeted << endl;
             }
         }
     }
+}
+int highestSpending(Expenses *list, int count){
+    
+    
+    
+    return 0;
 }
