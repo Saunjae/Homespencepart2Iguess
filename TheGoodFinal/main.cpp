@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
+#include <limits>
 
 using namespace std;
 
@@ -16,8 +17,11 @@ struct Expenses {
 bool loadExpenses(Expenses *&list, int &count);
 void displayAll(const Expenses *list, int count);
 int Menu(const Expenses *list, int count);
+void sortAscending(Expenses * list, int count);
+void sortDescending(Expenses * list, int count);
 void highestSpending(const Expenses* list, int count);
 void lowestSpending(const Expenses* list, int count);
+string getMonthName(int monthNumber);
 
 int Menu(Expenses *list, int count) {
     int choice;
@@ -33,7 +37,15 @@ int Menu(Expenses *list, int count) {
         cout << "6. Exit" << endl;
 
         cout << "Enter choice: ";
-        cin >> choice;
+    
+        // Validate that user entered an integer
+        if (!(cin >> choice)) {
+            cout << "Numeric input only. Please try again." << endl;
+            cin.clear(); // resets the error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // flushes the bad characters
+            choice = 0; // forces the loop to continue
+            continue;
+        }
 
         switch (choice) {
         case 1:
@@ -45,12 +57,20 @@ int Menu(Expenses *list, int count) {
             case 3:
                 lowestSpending(list, count);
                 break;
+        case 4:
+            sortAscending(list, count);
+            displayAll(list, count);
+            break;
+        case 5:
+             sortDescending(list, count);
+             displayAll(list, count);
+             break;
         case 6:
             cout << "Have a good day!" << endl;
             break;
 
         default:
-            cout << "Invalid choice.\n";
+            cout << "Invalid choice. Input a value[1-6]\n";
         }
 
     } while (choice != 6);
@@ -116,31 +136,72 @@ bool loadExpenses(Expenses *&list, int &count) {
     return true;
 }
 
-void displayAll(const Expenses *list, int count) {
-    cout << left << setw(10) << "Month" << setw(15) << "Category" << setw(12)
-         << "Spent" << setw(12) << "Budgeted" << endl;
+void displayAll(const Expenses* list, int count) {
+    // Top-level Header
+    cout << left << setw(15) << "Month" 
+         << setw(15) << "Category" 
+         << setw(12) << "Spent" 
+         << setw(12) << "Budgeted" << endl;
+         
+    cout << "---------------------------------------------------------" << endl;
 
-    cout << "---------------------------------------------" << endl;
+    // Linear Traversal: We loop through the array exactly as it is ordered in memory.
+    // This allows the Selection Sort results to actually be visible.
+    for (int i = 0; i < count; i++) {
+        // We still use getMonthName so the integer '1' prints as 'January'
+        cout << left << setw(15) << getMonthName(list[i].month)
+             << setw(15) << list[i].category
+             << "$" << setw(11) << fixed << setprecision(2) << list[i].amount 
+             << "$" << setw(11) << fixed << setprecision(2) << list[i].budgeted 
+             << endl;
+    }
+    
+    cout << "---------------------------------------------------------" << endl;
+    cout << "End of Report (" << count << " records displayed)" << endl;
+}
+string getMonthName(int monthNumber) {
+    // Add "November" to the array so there are 12 indices
+    const string months[] = { 
+        "January", "February", "March", "April", "May", "June", 
+        "July", "August", "September", "October", "November", "December" 
+    };
 
-    for (int m = 1; m <= 12; m++) {
-        bool monthFound = false;
+    if (monthNumber >= 1 && monthNumber <= 12) {
+        return months[monthNumber - 1]; // Index 0 is January, Index 11 is December
+    }
+    return "Unknown";
+}
 
-        for (int i = 0; i < count; i++) {
-            if (list[i].month == m) {
-                if (!monthFound) {
-                    cout << "\n--- Month " << m << " ---" << endl;
-                    monthFound = true;
-                }
+void sortAscending(Expenses * list, int count){
 
-                cout << left << setw(10) << "" << setw(15) << list[i].category
-                     << "$" << setw(11) << fixed << setprecision(2)
-                     << list[i].amount << "$" << setw(11) << fixed
-                     << setprecision(2) << list[i].budgeted << endl;
+    for (int i = 0; i < count - 1; i++) {
+        int minIndex = i;
+        for (int j = i + 1; j < count; j++) {
+            if (list[j].amount < list[minIndex].amount) {
+                minIndex = j;
             }
         }
+        // Swap the entire struct
+        Expenses temp = list[i];
+        list[i] = list[minIndex];
+        list[minIndex] = temp;
+
     }
 }
 
+void sortDescending(Expenses* list, int count) {
+    for (int i = 0; i < count - 1; i++) {
+        int maxIndex = i;
+        for (int j = i + 1; j < count; j++) {
+            if (list[j].amount > list[maxIndex].amount) {
+                maxIndex = j;
+            }
+        }
+        Expenses temp = list[i];
+        list[i] = list[maxIndex];
+        list[maxIndex] = temp;
+    }
+}
 
 void highestSpending(const Expenses* list, int count) {
     double monthTotals[12] = {0};
@@ -171,15 +232,16 @@ void lowestSpending(const Expenses* list, int count) {
         int monthIndex = list[i].month - 1;
         monthTotals[monthIndex] += list[i].amount;
     }
+    int lowestIndex = -1; 
+    for (int i = 0; i < 12; i++) {
 
-    int lowestIndex = 0;
-
-    // Find lowest month
-    for (int i = 1; i < 12; i++) {
-        if (monthTotals[i] < monthTotals[lowestIndex]) {
+        
+    if (monthTotals[i] > 0) { // Only count months with recorded expenses
+        if (lowestIndex == -1 || monthTotals[i] < monthTotals[lowestIndex]) {
             lowestIndex = i;
         }
     }
+}
 
     cout << "\nMonth with lowest spending: Month " << lowestIndex + 1 << endl;
     cout << "Total spent: $" << fixed << setprecision(2)
