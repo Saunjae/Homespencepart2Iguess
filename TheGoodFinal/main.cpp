@@ -17,6 +17,7 @@ bool loadExpenses(Expenses *&list, int &count);
 void displayAll(const Expenses *list, int count);
 int Menu(const Expenses *list, int count);
 void highestSpending(const Expenses* list, int count);
+void lowestSpending(const Expenses* list, int count);
 
 int Menu(Expenses *list, int count) {
     int choice;
@@ -41,8 +42,9 @@ int Menu(Expenses *list, int count) {
         case 2:
             highestSpending(list, count);
             break;
-        case 3:
+            case 3:
                 lowestSpending(list, count);
+                break;
         case 6:
             cout << "Have a good day!" << endl;
             break;
@@ -161,24 +163,27 @@ void highestSpending(const Expenses* list, int count) {
          << monthTotals[highestMonth] << endl;
 }
 
-void lowestMonth(const Expenses* list, int count) {
+void lowestSpending(const Expenses* list, int count) {
     double monthTotals[12] = {0};
 
+    // Add up totals for each month
     for (int i = 0; i < count; i++) {
         int monthIndex = list[i].month - 1;
         monthTotals[monthIndex] += list[i].amount;
     }
 
-    int lowestMonth = 0;
+    int lowestIndex = 0;
 
+    // Find lowest month
     for (int i = 1; i < 12; i++) {
-        if (monthTotals[i] < monthTotals[lowestMonth]) {
-            lowestMonth = i;
+        if (monthTotals[i] < monthTotals[lowestIndex]) {
+            lowestIndex = i;
         }
     }
 
-    cout << "\nMonth with lowest spending: Month " << lowestMonth + 1 << endl;
+    cout << "\nMonth with lowest spending: Month " << lowestIndex + 1 << endl;
     cout << "Total spent: $" << fixed << setprecision(2)
-         << monthTotals[lowestMonth] << endl;
+         << monthTotals[lowestIndex] << endl;
 }
+
 
