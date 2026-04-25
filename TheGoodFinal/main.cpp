@@ -16,9 +16,9 @@ struct Expenses {
 bool loadExpenses(Expenses *&list, int &count);
 void displayAll(const Expenses *list, int count);
 int Menu(const Expenses *list, int count);
-int HighestSpending();
+void highestSpending(const Expenses* list, int count);
 
-int Menu(const Expenses *list, int count) {
+int Menu(Expenses *list, int count) {
     int choice;
 
     cout << "Welcome to the Home Expense Tracker!" << endl;
@@ -26,9 +26,10 @@ int Menu(const Expenses *list, int count) {
     do {
         cout << "\n1. See all expenses grouped by month" << endl;
         cout << "2. See the month with the highest spending" << endl;
-        cout << "3. See each month (ascending order)" << endl;
-        cout << "4. See each month (descending order)" << endl;
-        cout << "5. Exit" << endl;
+        cout << "3. See the month with the lowest spending" << endl;
+        cout << "4. See each month (ascending order)" << endl;
+        cout << "5. See each month (descending order)" << endl;
+        cout << "6. Exit" << endl;
 
         cout << "Enter choice: ";
         cin >> choice;
@@ -37,7 +38,11 @@ int Menu(const Expenses *list, int count) {
         case 1:
             displayAll(list, count);
             break;
-
+        case 2:
+            highestSpending(list, count);
+            break;
+        case 3:
+                lowestSpending(list, count);
         case 6:
             cout << "Have a good day!" << endl;
             break;
@@ -46,7 +51,7 @@ int Menu(const Expenses *list, int count) {
             cout << "Invalid choice.\n";
         }
 
-    } while (choice != 6);
+    } while (choice != 5);
 
     return choice;
 }
@@ -133,9 +138,47 @@ void displayAll(const Expenses *list, int count) {
         }
     }
 }
-int highestSpending(Expenses *list, int count){
-    
-    
-    
-    return 0;
+
+
+void highestSpending(const Expenses* list, int count) {
+    double monthTotals[12] = {0};
+
+    for (int i = 0; i < count; i++) {
+        int monthIndex = list[i].month - 1;
+        monthTotals[monthIndex] += list[i].amount;
+    }
+
+    int highestMonth = 0;
+
+    for (int i = 1; i < 12; i++) {
+        if (monthTotals[i] > monthTotals[highestMonth]) {
+            highestMonth = i;
+        }
+    }
+
+    cout << "\nMonth with highest spending: Month " << highestMonth + 1 << endl;
+    cout << "Total spent: $" << fixed << setprecision(2)
+         << monthTotals[highestMonth] << endl;
 }
+
+void lowestMonth(const Expenses* list, int count) {
+    double monthTotals[12] = {0};
+
+    for (int i = 0; i < count; i++) {
+        int monthIndex = list[i].month - 1;
+        monthTotals[monthIndex] += list[i].amount;
+    }
+
+    int lowestMonth = 0;
+
+    for (int i = 1; i < 12; i++) {
+        if (monthTotals[i] < monthTotals[lowestMonth]) {
+            lowestMonth = i;
+        }
+    }
+
+    cout << "\nMonth with lowest spending: Month " << lowestMonth + 1 << endl;
+    cout << "Total spent: $" << fixed << setprecision(2)
+         << monthTotals[lowestMonth] << endl;
+}
+
